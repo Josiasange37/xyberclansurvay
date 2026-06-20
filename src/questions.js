@@ -24,7 +24,7 @@ export const uiTranslations = {
     of: "OF",
     auditCompleted: "AUDIT COMPLETED",
     reviewTitle: "Review & Transmit Your Data",
-    reviewDesc: "Review your choices below. You can send this report directly to our development squad via WhatsApp or secure email. We generally respond with audits within 24 hours.",
+    reviewDesc: "Review your choices below. Your data will be saved to Firebase and a confirmation email will be sent automatically. We generally respond with audits within 24 hours.",
     transmissionReport: "TRANSMISSION REPORT",
     version: "XYBERCLAN // V1.0",
     repCredentials: "REPRESENTATIVE CREDENTIALS",
@@ -32,7 +32,7 @@ export const uiTranslations = {
     leadNameLabel: "Lead Name",
     emailLabel: "Work Email",
     phoneLabel: "Direct Link",
-    transmitWhatsApp: "Transmit via WhatsApp",
+    transmitEmail: "Sent via Email",
     transmitEmail: "Transmit via Email",
     statsTitle: "STUDIO STATS",
     stat1Title: "24h",
@@ -45,7 +45,7 @@ export const uiTranslations = {
     notAvailable: "N/A",
     submitBtn: "Send",
     succTitle: "Survey Sent Successfully!",
-    succDesc: "Your data has been submitted to Google Sheets, sent via WhatsApp, and emailed to our team. We will get back to you within 24 hours.",
+    succDesc: "Your data has been saved to Firebase and confirmation emails have been sent. We will get back to you within 24 hours.",
     succBtn: "Start New Survey"
   },
   fr: {
@@ -71,15 +71,15 @@ export const uiTranslations = {
     of: "SUR",
     auditCompleted: "AUDIT TERMINÉ",
     reviewTitle: "Vérifier & Transmettre Vos Données",
-    reviewDesc: "Vérifiez vos choix ci-dessous. Vous pouvez envoyer ce rapport directement à notre équipe de développement par WhatsApp ou par e-mail sécurisé. Nous répondons sous 24 heures.",
+    reviewDesc: "Vérifiez vos choix ci-dessous. Vos données seront sauvegardées dans Firebase et un e-mail de confirmation sera envoyé automatiquement. Nous répondons sous 24 heures.",
     transmissionReport: "RAPPORT DE TRANSMISSION",
     version: "XYBERCLAN // V1.0",
     repCredentials: "COORDONNÉES DU REPRÉSENTANT",
     companyLabel: "Entreprise / Marque",
     leadNameLabel: "Nom du Responsable",
     emailLabel: "E-mail Professionnel",
-    phoneLabel: "Lien Direct / WhatsApp",
-    transmitWhatsApp: "Transmettre via WhatsApp",
+    phoneLabel: "Direct Link / Phone",
+    transmitEmail: "Envoyé par E-mail",
     transmitEmail: "Transmettre par E-mail",
     statsTitle: "STATS DU STUDIO",
     stat1Title: "24h",
@@ -92,7 +92,7 @@ export const uiTranslations = {
     notAvailable: "Non renseigné",
     submitBtn: "Envoyer",
     succTitle: "Enquête envoyée avec succès !",
-    succDesc: "Vos données ont été soumises à Google Sheets, envoyées par WhatsApp et e-maillées à notre équipe. Nous vous répondrons dans les 24 heures.",
+    succDesc: "Vos données ont été sauvegardées dans Firebase et les e-mails de confirmation ont été envoyés. Nous vous répondrons dans les 24 heures.",
     succBtn: "Commencer une nouvelle enquête"
   }
 };
@@ -369,7 +369,7 @@ export const surveyFlows = {
           fields: [
             { label: "Full Name *", id: "contactName", type: "text" },
             { label: "Professional Email *", id: "contactEmail", type: "email" },
-            { label: "Phone / WhatsApp", id: "contactPhone", type: "tel" }
+            { label: "Phone", id: "contactPhone", type: "tel" }
           ]
         }
       ]
@@ -626,7 +626,7 @@ export const surveyFlows = {
           fields: [
             { label: "Nom complet *", id: "contactName", type: "text" },
             { label: "Email professionnel *", id: "contactEmail", type: "email" },
-            { label: "Téléphone / WhatsApp", id: "contactPhone", type: "tel" }
+            { label: "Téléphone", id: "contactPhone", type: "tel" }
           ]
         }
       ]

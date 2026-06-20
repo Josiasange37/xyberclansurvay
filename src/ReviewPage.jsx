@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { Send, ChevronLeft, RotateCcw } from 'lucide-react';
 import gsap from 'gsap';
+import { submitToFirebase } from './firebase';
+
+const RESEND_API_KEY = import.meta.env.VITE_RESEND_API_KEY || '';
+const RESEND_FROM = import.meta.env.VITE_RESEND_FROM || 'XyberClan Survey <onboarding@resend.dev>';
+const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL || 'xyberclandev@gmail.com';
 
 export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
   generateSummary, lang }) {
@@ -19,70 +24,84 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
     return () => ctx.revert();
   }, []);
 
-  const buildEmailBody = () => {
+  const buildEmailContent = () => {
     const txt = generateSummary();
-    const sub = `[XyberClan] ${selectedFlow === 'enterprise'
-      ? (lang === 'fr' ? 'Enquête Opérationnelle' : 'Enterprise Survey')
-      : (lang === 'fr' ? 'Proposition de Partenariat' : 'Partnership Proposal')}`;
-    return { subject: sub, body: txt };
+    const isFr = lang === 'fr';
+    const flowLabel = selectedFlow === 'enterprise'
+      ? (isFr ? 'Enquête Opérationnelle' : 'Enterprise Survey')
+      : (isFr ? 'Proposition de Partenariat' : 'Partnership Proposal');
+
+    const subject = `[XyberClan] ${flowLabel} — ${answers.companyName || answers.contactName || ''}`;
+    const html = `
+      <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 640px; margin: 0 auto; color: #1e293b;">
+        <div style="background: linear-gradient(135deg, #050507 0%, #0b0c10 100%); padding: 40px 32px; border-radius: 16px 16px 0 0;">
+          <h1 style="color: #06b6d4; font-size: 22px; margin: 0 0 8px; font-weight: 800;">XYBERCLAN</h1>
+          <p style="color: #94a3b8; font-size: 13px; margin: 0; letter-spacing: 0.05em; text-transform: uppercase;">${flowLabel}</p>
+        </div>
+        <div style="background: #ffffff; padding: 32px; border-radius: 0 0 16px 16px; border: 1px solid #e2e8f0;">
+          <h2 style="font-size: 18px; margin: 0 0 20px; color: #0f172a;">
+            ${isFr ? 'Merci pour votre soumission' : 'Thank you for your submission'}
+          </h2>
+          <p style="font-size: 14px; color: #475569; line-height: 1.7; margin: 0 0 24px;">
+            ${isFr
+              ? `Nous avons bien reçu votre <strong>${flowLabel.toLowerCase()}</strong>. Voici un récapitulatif de vos réponses :`
+              : `We have received your <strong>${flowLabel.toLowerCase()}</strong>. Here is a summary of your responses:`}
+          </p>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 24px;">
+            <pre style="font-size: 12px; color: #334155; white-space: pre-wrap; word-break: break-word; font-family: 'Courier New', monospace; margin: 0; line-height: 1.8;">${txt}</pre>
+          </div>
+          <p style="font-size: 13px; color: #64748b; line-height: 1.6; margin: 0;">
+            ${isFr
+              ? 'Notre équipe examinera votre soumission et vous répondra sous <strong>24 heures</strong>.'
+              : 'Our team will review your submission and respond within <strong>24 hours</strong>.'}
+          </p>
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
+          <p style="font-size: 11px; color: #94a3b8; margin: 0; text-align: center;">
+            © ${new Date().getFullYear()} XyberClan — ${isFr ? 'Tous droits réservés' : 'All rights reserved'}
+          </p>
+        </div>
+      </div>`;
+
+    return { subject, html, text: txt };
   };
 
-  const handleSendAll = async () => {
-    setIsSubmitting(true);
-    const txt = generateSummary();
-
-    // 1) Google Sheets
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxO-XT0bSZPbszsvb9SP5cHUewC7nRUrta2HT2aI4Uh37EtPQfZ69Tzc4_VibQlHNv4Q/exec';
-    const payload = {
-      companyName: answers.companyName || "",
-      industry: answers.industry || "",
-      companySize: answers.companySize || "",
-      role: answers.role || "",
-      challenges: Array.isArray(answers.challenges) ? answers.challenges.join(", ") : (answers.challenges || ""),
-      priorities: answers.priorities || "",
-      cyberIncidents: Array.isArray(answers.cyberIncidents) ? answers.cyberIncidents.join(", ") : (answers.cyberIncidents || ""),
-      securityMaturity: answers.securityMaturity || "",
-      aiUsage: answers.aiUsage || "",
-      aiTools: answers.aiTools || "",
-      processesToAutomate: answers.processesToAutomate || "",
-      trainingNeeds: Array.isArray(answers.trainingNeeds) ? answers.trainingNeeds.join(", ") : (answers.trainingNeeds || ""),
-      skillGaps: answers.skillGaps || "",
-      suggestions: answers.suggestions || "",
-      xyberclanServices: Array.isArray(answers.xyberclanServices) ? answers.xyberclanServices.join(", ") : (answers.xyberclanServices || ""),
-      orgType: answers.orgType || "",
-      partnershipType: answers.partnershipType || "",
-      budget: answers.budget || "",
-      proposal: answers.proposal || "",
-      timeline: answers.timeline || "",
-      audienceReach: answers.audienceReach || "",
-      whyXyberClan: answers.whyXyberClan || "",
-      name: answers.name || "",
-      contactName: answers.contactName || "",
-      contactEmail: answers.contactEmail || "",
-      contactPhone: answers.contactPhone || "",
-      consent: true,
-      flowType: selectedFlow
-    };
-
-    const sheetsPromise = fetch(GOOGLE_SCRIPT_URL, {
+  const sendConfirmationEmail = async () => {
+    if (!RESEND_API_KEY || RESEND_API_KEY === 're_your_api_key_here') {
+      console.warn('Resend API key not configured, skipping email');
+      return;
+    }
+    const { subject, html } = buildEmailContent();
+    await fetch('https://api.resend.com/emails', {
       method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    }).catch(e => console.error('Sheets error:', e));
+      headers: {
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: RESEND_FROM,
+        to: [CONTACT_EMAIL],
+        subject,
+        html
+      })
+    });
+  };
 
-    // 2) WhatsApp — open in new tab
-    const waUrl = `https://wa.me/237696814391?text=${encodeURIComponent(txt)}`;
-    window.open(waUrl, '_blank');
-
-    // 3) Email — open mailto
-    const { subject, body } = buildEmailBody();
-    window.location.href = `mailto:xyberclandev@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-    // Wait for sheets to finish, then show success
-    await sheetsPromise;
-    setIsSubmitting(false);
-    setIsSuccess(true);
+  const handleSend = async () => {
+    setIsSubmitting(true);
+    try {
+      await Promise.all([
+        submitToFirebase(selectedFlow, answers),
+        sendConfirmationEmail()
+      ]);
+      setIsSuccess(true);
+    } catch (e) {
+      console.error(e);
+      alert(lang === 'fr'
+        ? 'Une erreur est survenue. Veuillez réessayer.'
+        : 'An error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSuccess) {
@@ -105,7 +124,6 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
       display: 'flex', flexDirection: 'column', alignItems: 'center',
       padding: 'clamp(28px,5vw,56px) 24px' }}>
 
-      {/* Completed badge */}
       <div className="rv-item" style={{ alignSelf: 'flex-start', maxWidth: 680, width: '100%',
         margin: '0 auto 20px' }}>
         <span style={{ fontSize: '0.62rem', fontWeight: 800, letterSpacing: '0.18em',
@@ -192,9 +210,9 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
         </div>
       </div>
 
-      {/* Single unified Send button */}
+      {/* Single Send button */}
       <div className="rv-item review-actions" style={{ maxWidth: 680, width: '100%', margin: '0 auto' }}>
-        <button onClick={handleSendAll} disabled={isSubmitting}
+        <button onClick={handleSend} disabled={isSubmitting}
           className="glow-btn"
           style={{ width: '100%', background: isSubmitting ? 'rgba(255,255,255,0.04)' : accentColor,
             border: 'none', borderRadius: 10, padding: '16px 24px',
@@ -210,8 +228,8 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
         <span className="rv-item" style={{ display: 'block', textAlign: 'center', marginTop: 10,
           fontSize: '0.68rem', color: 'var(--text-muted)' }}>
           {lang === 'fr'
-            ? 'Envoie automatique vers Google Sheets, WhatsApp et E-mail'
-            : 'Auto-sends to Google Sheets, WhatsApp and Email'}
+            ? 'Enregistre dans Firebase et envoie un e-mail de confirmation'
+            : 'Saves to Firebase and sends a confirmation email'}
         </span>
       </div>
 
