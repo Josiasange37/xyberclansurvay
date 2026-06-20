@@ -36,6 +36,10 @@ export function useAppState() {
     if (currentQuestion.placeholder && !currentQuestion.options) {
       return !!answers[currentQuestion.id]?.trim();
     }
+    if (currentQuestion.multiple) {
+      const val = answers[currentQuestion.id];
+      return Array.isArray(val) ? val.length > 0 : !!val;
+    }
     return !!answers[currentQuestion.id];
   };
 
@@ -52,8 +56,16 @@ export function useAppState() {
   };
 
   const handleChoiceSelect = (qId, value) => {
-    setAnswers(p => ({ ...p, [qId]: value }));
-    setTimeout(advance, 260);
+    if (currentQuestion?.multiple) {
+      setAnswers(p => {
+        const prev = Array.isArray(p[qId]) ? p[qId] : [];
+        const next = prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value];
+        return { ...p, [qId]: next };
+      });
+    } else {
+      setAnswers(p => ({ ...p, [qId]: value }));
+      setTimeout(advance, 260);
+    }
   };
 
   const handleFieldChange = (id, value) => setAnswers(p => ({ ...p, [id]: value }));
@@ -77,7 +89,20 @@ export function useAppState() {
         txt += `--- REPRESENTATIVE ---\n`;
         step.fields.forEach(f => { txt += `${f.label.toUpperCase()}: ${answers[f.id] || 'N/A'}\n`; });
       } else {
-        txt += `${step.question.replace(/\?$/, '').toUpperCase()}:\n> ${answers[step.id] || 'N/A'}\n\n`;
+        let rawVal = answers[step.id];
+        let val = rawVal || 'N/A';
+        if (step.options && rawVal) {
+          if (step.multiple && Array.isArray(rawVal)) {
+            val = rawVal.map(v => {
+              const matched = step.options.find(o => (typeof o === 'object' ? o.value : o) === v);
+              return matched ? (typeof matched === 'object' ? matched.label : matched) : v;
+            }).join(", ");
+          } else {
+            const matched = step.options.find(o => (typeof o === 'object' ? o.value : o) === rawVal);
+            if (matched) val = typeof matched === 'object' ? matched.label : matched;
+          }
+        }
+        txt += `${step.question.replace(/\?$/, '').toUpperCase()}:\n> ${val}\n\n`;
       }
     });
     txt += `\nSubmitted via XyberClan Portal\n====================================`;

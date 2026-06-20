@@ -53,10 +53,19 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
       skillGaps: answers.skillGaps || "",
       suggestions: answers.suggestions || "",
       xyberclanServices: Array.isArray(answers.xyberclanServices) ? answers.xyberclanServices.join(", ") : (answers.xyberclanServices || ""),
+      orgType: answers.orgType || "",
+      partnershipType: answers.partnershipType || "",
+      budget: answers.budget || "",
+      proposal: answers.proposal || "",
+      timeline: answers.timeline || "",
+      audienceReach: answers.audienceReach || "",
+      whyXyberClan: answers.whyXyberClan || "",
+      name: answers.name || "",
       contactName: answers.contactName || "",
       contactEmail: answers.contactEmail || "",
       contactPhone: answers.contactPhone || "",
-      consent: true
+      consent: true,
+      flowType: selectedFlow
     };
 
     try {
@@ -134,6 +143,19 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
 
         {steps.map((step, i) => {
           if (step.fields) return null;
+          let rawVal = answers[step.id];
+          let displayVal = rawVal || t.notAvailable;
+          if (step.options && rawVal) {
+            if (step.multiple && Array.isArray(rawVal)) {
+              displayVal = rawVal.map(v => {
+                const matched = step.options.find(o => (typeof o === 'object' ? o.value : o) === v);
+                return matched ? (typeof matched === 'object' ? matched.label : matched) : v;
+              }).join(", ");
+            } else {
+              const matched = step.options.find(o => (typeof o === 'object' ? o.value : o) === rawVal);
+              if (matched) displayVal = typeof matched === 'object' ? matched.label : matched;
+            }
+          }
           return (
             <div key={i} style={{ display: 'flex', justifyContent: 'space-between',
               alignItems: 'flex-start', gap: 16 }}>
@@ -142,7 +164,7 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
               </span>
               <span style={{ fontSize: '0.78rem', fontWeight: 500, color: 'var(--text-primary)',
                 textAlign: 'right', width: '58%' }}>
-                {answers[step.id] || t.notAvailable}
+                {displayVal}
               </span>
             </div>
           );

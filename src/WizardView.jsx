@@ -103,9 +103,14 @@ export function WizardView({ steps, currentStep, currentQuestion, answers, selec
           {currentQuestion.options && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
               {currentQuestion.options.map((opt, idx) => {
-                const sel = answers[currentQuestion.id] === opt;
+                const optVal = typeof opt === 'object' ? opt.value : opt;
+                const optLabel = typeof opt === 'object' ? opt.label : opt;
+                const isMulti = !!currentQuestion.multiple;
+                const sel = isMulti
+                  ? (Array.isArray(answers[currentQuestion.id]) && answers[currentQuestion.id].includes(optVal))
+                  : answers[currentQuestion.id] === optVal;
                 return (
-                  <button key={idx} onClick={() => handleChoiceSelect(currentQuestion.id, opt)}
+                  <button key={idx} onClick={() => handleChoiceSelect(currentQuestion.id, optVal)}
                     className="choice-card aR"
                     style={{ background: sel ? `rgba(${accentRgb},0.06)` : 'var(--bg-input)',
                       border: `1px solid ${sel ? accentColor : 'var(--border-color)'}`,
@@ -114,14 +119,14 @@ export function WizardView({ steps, currentStep, currentQuestion, answers, selec
                       transition: 'all 0.2s ease' }}
                     onMouseEnter={e => { if (!sel) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)'; }}
                     onMouseLeave={e => { if (!sel) e.currentTarget.style.borderColor = 'var(--border-color)'; }}>
-                    <div style={{ width: 34, height: 34, borderRadius: 8, flexShrink: 0,
+                    <div style={{ width: 34, height: 34, borderRadius: isMulti ? 8 : 8, flexShrink: 0,
                       background: sel ? `rgba(${accentRgb},0.12)` : 'rgba(255,255,255,0.04)',
                       color: sel ? accentColor : 'var(--text-muted)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      {getIcon(opt)}
+                      {getIcon(optLabel)}
                     </div>
-                    <span style={{ fontSize: '0.88rem', fontWeight: 500, flex: 1 }}>{opt}</span>
-                    <div style={{ width: 17, height: 17, borderRadius: '50%', flexShrink: 0,
+                    <span style={{ fontSize: '0.88rem', fontWeight: 500, flex: 1 }}>{optLabel}</span>
+                    <div style={{ width: 17, height: 17, borderRadius: isMulti ? 4 : '50%', flexShrink: 0,
                       background: sel ? accentColor : 'transparent',
                       border: sel ? 'none' : '2px solid var(--border-color)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

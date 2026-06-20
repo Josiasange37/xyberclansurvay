@@ -267,6 +267,104 @@ export const surveyFlows = {
           ]
         }
       ]
+    },
+    partnership: {
+      title: "Partnership Proposal",
+      badge: "Partnership",
+      intro: "Propose a partnership with XyberClan. Tell us about your organization and how you'd like to collaborate.",
+      steps: [
+        {
+          id: "orgName",
+          question: "Organization Information",
+          description: "Tell us about your organization.",
+          fields: [
+            { label: "Organization / Brand Name *", id: "companyName", type: "text" },
+            { label: "Your Name *", id: "name", type: "text", placeholder: "Full name" }
+          ]
+        },
+        {
+          id: "orgType",
+          question: "Organization Type",
+          description: "What type of organization are you?",
+          options: [
+            { label: "Tech Company / Startup", value: "tech_company" },
+            { label: "Non-Profit / NGO", value: "nonprofit" },
+            { label: "Educational Institution", value: "education" },
+            { label: "Government / Public Sector", value: "government" },
+            { label: "Media / Creative Agency", value: "media" },
+            { label: "Individual / Freelancer", value: "individual" },
+            { label: "Other", value: "autre" }
+          ]
+        },
+        {
+          id: "partnershipType",
+          question: "Partnership Type",
+          description: "What kind of partnership are you proposing?",
+          options: [
+            { label: "Event Sponsorship", value: "event_sponsorship" },
+            { label: "Co-Branding Campaign", value: "co_branding" },
+            { label: "Developer Bootcamp Support", value: "bootcamp" },
+            { label: "Tech Meetup Sponsorship", value: "meetup" },
+            { label: "Content Collaboration", value: "content" },
+            { label: "Strategic Alliance", value: "strategic" },
+            { label: "Other", value: "autre" }
+          ]
+        },
+        {
+          id: "budget",
+          question: "Estimated Budget Range",
+          description: "What is your approximate budget for this partnership?",
+          options: [
+            { label: "In-kind / Barter (resources, services)", value: "inkind" },
+            { label: "Under $500", value: "under_500" },
+            { label: "$500 - $2,000", value: "500_2000" },
+            { label: "$2,000 - $5,000", value: "2000_5000" },
+            { label: "$5,000 - $10,000", value: "5000_10000" },
+            { label: "$10,000+", value: "10000_plus" },
+            { label: "To be discussed", value: "tbd" }
+          ]
+        },
+        {
+          id: "proposal",
+          question: "Partnership Proposal",
+          description: "Describe your partnership idea in detail.",
+          placeholder: "Describe your proposal, goals, and how you envision the collaboration..."
+        },
+        {
+          id: "timeline",
+          question: "Proposed Timeline",
+          description: "When would you like this partnership to start?",
+          options: [
+            { label: "Immediately", value: "immediate" },
+            { label: "Within 1 month", value: "1_month" },
+            { label: "Within 3 months", value: "3_months" },
+            { label: "Within 6 months", value: "6_months" },
+            { label: "Flexible / No rush", value: "flexible" }
+          ]
+        },
+        {
+          id: "audienceReach",
+          question: "Audience & Reach",
+          description: "Tell us about your audience or community size.",
+          placeholder: "e.g. 10K followers, 500 newsletter subscribers, 2000 event attendees..."
+        },
+        {
+          id: "whyXyberClan",
+          question: "Why XyberClan?",
+          description: "What attracts you to partnering with XyberClan?",
+          placeholder: "Tell us why you want to collaborate with us..."
+        },
+        {
+          id: "contact",
+          question: "Contact Information",
+          description: "How can we reach you?",
+          fields: [
+            { label: "Full Name *", id: "contactName", type: "text" },
+            { label: "Professional Email *", id: "contactEmail", type: "email" },
+            { label: "Phone / WhatsApp", id: "contactPhone", type: "tel" }
+          ]
+        }
+      ]
     }
   },
   fr: {
@@ -423,6 +521,104 @@ export const surveyFlows = {
             { label: "Nom complet", id: "contactName", type: "text" },
             { label: "Email professionnel", id: "contactEmail", type: "email" },
             { label: "Téléphone", id: "contactPhone", type: "tel" }
+          ]
+        }
+      ]
+    },
+    partnership: {
+      title: "Proposition de Partenariat",
+      badge: "Partenariat",
+      intro: "Proposez un partenariat avec XyberClan. Parlez-nous de votre organisation et de la manière dont vous souhaitez collaborer.",
+      steps: [
+        {
+          id: "orgName",
+          question: "Informations sur l'organisation",
+          description: "Parlez-nous de votre organisation.",
+          fields: [
+            { label: "Nom de l'organisation / Marque *", id: "companyName", type: "text" },
+            { label: "Votre Nom *", id: "name", type: "text", placeholder: "Nom complet" }
+          ]
+        },
+        {
+          id: "orgType",
+          question: "Type d'organisation",
+          description: "Quel type d'organisation êtes-vous ?",
+          options: [
+            { label: "Entreprise Tech / Startup", value: "tech_company" },
+            { label: "Association / ONG", value: "nonprofit" },
+            { label: "Institution éducative", value: "education" },
+            { label: "Gouvernement / Secteur public", value: "government" },
+            { label: "Agence média / Créative", value: "media" },
+            { label: "Individuel / Freelance", value: "individual" },
+            { label: "Autre", value: "autre" }
+          ]
+        },
+        {
+          id: "partnershipType",
+          question: "Type de partenariat",
+          description: "Quel type de partenariat proposez-vous ?",
+          options: [
+            { label: "Parrainage d'événement", value: "event_sponsorship" },
+            { label: "Campagne de co-branding", value: "co_branding" },
+            { label: "Soutien à un bootcamp développeur", value: "bootcamp" },
+            { label: "Parrainage de meetup tech", value: "meetup" },
+            { label: "Collaboration de contenu", value: "content" },
+            { label: "Alliance stratégique", value: "strategic" },
+            { label: "Autre", value: "autre" }
+          ]
+        },
+        {
+          id: "budget",
+          question: "Budget estimé",
+          description: "Quel est votre budget approximatif pour ce partenariat ?",
+          options: [
+            { label: "En nature / Troc (ressources, services)", value: "inkind" },
+            { label: "Moins de 500 $", value: "under_500" },
+            { label: "500 $ - 2 000 $", value: "500_2000" },
+            { label: "2 000 $ - 5 000 $", value: "2000_5000" },
+            { label: "5 000 $ - 10 000 $", value: "5000_10000" },
+            { label: "Plus de 10 000 $", value: "10000_plus" },
+            { label: "À discuter", value: "tbd" }
+          ]
+        },
+        {
+          id: "proposal",
+          question: "Proposition de partenariat",
+          description: "Décrivez votre idée de partenariat en détail.",
+          placeholder: "Décrivez votre proposition, vos objectifs et comment vous imaginez la collaboration..."
+        },
+        {
+          id: "timeline",
+          question: "Calendrier proposé",
+          description: "Quand souhaitez-vous que ce partenariat commence ?",
+          options: [
+            { label: "Immédiatement", value: "immediate" },
+            { label: "Dans un mois", value: "1_month" },
+            { label: "Dans 3 mois", value: "3_months" },
+            { label: "Dans 6 mois", value: "6_months" },
+            { label: "Flexible / Pas pressé", value: "flexible" }
+          ]
+        },
+        {
+          id: "audienceReach",
+          question: "Audience et portée",
+          description: "Parlez-nous de votre audience ou communauté.",
+          placeholder: "Ex: 10K abonnés, 500 abonnés newsletter, 2000 participants événement..."
+        },
+        {
+          id: "whyXyberClan",
+          question: "Pourquoi XyberClan ?",
+          description: "Qu'est-ce qui vous attire à collaborer avec XyberClan ?",
+          placeholder: "Dites-nous pourquoi vous voulez collaborer avec nous..."
+        },
+        {
+          id: "contact",
+          question: "Coordonnées",
+          description: "Comment pouvons-nous vous contacter ?",
+          fields: [
+            { label: "Nom complet *", id: "contactName", type: "text" },
+            { label: "Email professionnel *", id: "contactEmail", type: "email" },
+            { label: "Téléphone / WhatsApp", id: "contactPhone", type: "tel" }
           ]
         }
       ]
