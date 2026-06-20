@@ -59,7 +59,7 @@ export function LandingPage({ t, onSelect }) {
       </div>
 
       {/* Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+      <div className="landing-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
         gap: 24, width: '100%', maxWidth: 900, zIndex: 10 }}>
 
         {/* Enterprise */}

@@ -43,9 +43,9 @@ export function WizardView({ steps, currentStep, currentQuestion, answers, selec
   if (!currentQuestion) return null;
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'row', minHeight: 0, flexWrap: 'wrap' }}>
+    <div className="wizard-root" style={{ flex: 1, display: 'flex', flexDirection: 'row', minHeight: 0, flexWrap: 'wrap' }}>
       {/* ── LEFT: Question context ── */}
-      <div ref={leftRef} style={{ width: 'min(40%, 400px)', minWidth: 260, borderRight: '1px solid var(--border-color)',
+      <div ref={leftRef} className="wizard-left" style={{ width: 'min(40%, 400px)', minWidth: 260, borderRight: '1px solid var(--border-color)',
         background: 'rgba(0,0,0,0.12)', padding: 'clamp(28px,5vw,64px)', display: 'flex',
         flexDirection: 'column', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -73,7 +73,7 @@ export function WizardView({ steps, currentStep, currentQuestion, answers, selec
         </div>
 
         {/* Step timeline */}
-        <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: 24, marginTop: 40,
+        <div className="step-timeline" style={{ borderTop: '1px solid var(--border-color)', paddingTop: 24, marginTop: 40,
           display: 'flex', flexDirection: 'column', gap: 12 }}>
           {steps.map((s, i) => {
             const active = i === currentStep, done = i < currentStep;
@@ -94,7 +94,7 @@ export function WizardView({ steps, currentStep, currentQuestion, answers, selec
       </div>
 
       {/* ── RIGHT: Inputs ── */}
-      <div ref={rightRef} style={{ flex: 1, padding: 'clamp(28px,5vw,64px)',
+      <div ref={rightRef} className="wizard-right" style={{ flex: 1, padding: 'clamp(28px,5vw,64px)',
         display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
         background: 'var(--bg-darker)', overflowY: 'auto' }}>
         <div style={{ maxWidth: 580, width: '100%', margin: '0 auto' }}>

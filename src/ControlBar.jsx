@@ -3,7 +3,7 @@ import logo from './assets/logo.png';
 
 export function ControlBar({ lang, setLang, theme, setTheme, onRestart, showRestart, t }) {
   return (
-    <div style={{
+    <div className="control-bar" style={{
       padding: '12px 20px',
       borderBottom: '1px solid var(--border-color)',
       background: 'var(--bg-card)',
@@ -23,7 +23,7 @@ export function ControlBar({ lang, setLang, theme, setTheme, onRestart, showRest
         color: 'var(--accent-cyan)', fontFamily: 'var(--font-sans)',
       }}>
         <img src={logo} alt="XyberClan Logo" style={{ height: '32px' }} />
-        XYBERCLAN
+        <span className="brand-text">XYBERCLAN</span>
       </button>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -66,7 +66,7 @@ export function ControlBar({ lang, setLang, theme, setTheme, onRestart, showRest
         </div>
 
         {showRestart && (
-          <button onClick={onRestart} style={{
+          <button onClick={onRestart} className="hide-mobile" style={{
             background: 'var(--bg-input)', border: '1px solid var(--border-color)',
             borderRadius: '8px', padding: '7px 14px', fontSize: '0.72rem',
             fontWeight: 700, color: 'var(--text-secondary)', cursor: 'pointer',

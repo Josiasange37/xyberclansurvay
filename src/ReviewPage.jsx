@@ -118,7 +118,7 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
       </p>
 
       {/* Summary card */}
-      <div className="rv-item glass-panel" style={{ maxWidth: 680, width: '100%', borderRadius: 14,
+      <div className="rv-item glass-panel review-summary-card" style={{ maxWidth: 680, width: '100%', borderRadius: 14,
         padding: '24px 28px', background: 'rgba(0,0,0,0.18)', margin: '0 auto 24px',
         display: 'flex', flexDirection: 'column', gap: 14 }}>
 
@@ -153,7 +153,7 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
           display: 'flex', flexDirection: 'column', gap: 10 }}>
           <span style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.1em',
             color: 'var(--text-muted)' }}>{t.repCredentials}</span>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="review-contact-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             {[
               [t.companyLabel, answers.company],
               [t.leadNameLabel, answers.name],
@@ -172,7 +172,7 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
       </div>
 
       {/* Action buttons */}
-      <div className="rv-item" style={{ maxWidth: 680, width: '100%', margin: '0 auto',
+      <div className="rv-item review-actions" style={{ maxWidth: 680, width: '100%', margin: '0 auto',
         display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
         
         <button onClick={handleSubmit} disabled={isSubmitting} className="glow-btn"
@@ -200,7 +200,7 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
       </div>
 
       {/* Secondary actions */}
-      <div className="rv-item" style={{ display: 'flex', gap: 24, marginTop: 24,
+      <div className="rv-item review-secondary" style={{ display: 'flex', gap: 24, marginTop: 24,
         justifyContent: 'center', alignItems: 'center' }}>
         <button onClick={onBack}
           style={{ background: 'none', border: 'none', color: 'var(--text-secondary)',

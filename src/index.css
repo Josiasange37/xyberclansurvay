@@ -234,3 +234,151 @@ input, textarea {
 input::placeholder, textarea::placeholder {
   color: var(--text-muted);
 }
+
+/* ================================================================
+   MOBILE-FIRST RESPONSIVE
+   ================================================================ */
+
+/* Utility: hide on mobile / show on desktop */
+.hide-mobile {
+  display: block;
+}
+.show-mobile {
+  display: none;
+}
+
+/* Base mobile overrides */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+  .show-mobile {
+    display: block !important;
+  }
+
+  /* ControlBar */
+  .control-bar {
+    padding: 10px 14px !important;
+  }
+  .control-bar .brand-text {
+    display: none;
+  }
+  .control-pill {
+    padding: 3px;
+  }
+  .control-pill-btn {
+    padding: 4px 8px !important;
+    font-size: 0.62rem !important;
+  }
+
+  /* Landing cards */
+  .landing-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .landing-grid .land-card {
+    padding: 24px !important;
+  }
+
+  /* Wizard split → stack */
+  .wizard-root {
+    flex-direction: column !important;
+  }
+  .wizard-left {
+    width: 100% !important;
+    min-width: 0 !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-color);
+    padding: 24px 20px !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  .wizard-left .step-timeline {
+    display: none !important;
+  }
+  .wizard-right {
+    padding: 24px 20px !important;
+    overflow-y: visible !important;
+  }
+
+  /* Review page */
+  .review-actions {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .review-actions button {
+    padding: 14px 16px !important;
+    font-size: 0.82rem !important;
+    justify-content: center !important;
+  }
+  .review-secondary {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  .review-secondary span {
+    display: none !important;
+  }
+  .review-summary-card {
+    padding: 18px 16px !important;
+  }
+  .review-contact-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .wizard-left {
+    width: min(45%, 380px) !important;
+  }
+}
+
+/* Small mobile (≤ 400px) */
+@media (max-width: 400px) {
+  .control-pill-btn {
+    padding: 3px 6px !important;
+    font-size: 0.58rem !important;
+  }
+  .landing-grid .land-card {
+    padding: 18px !important;
+  }
+  .wizard-right {
+    padding: 18px 14px !important;
+  }
+  .wizard-left {
+    padding: 18px 14px !important;
+  }
+}
+
+/* Touch-friendly tap targets */
+@media (hover: none) and (pointer: coarse) {
+  .choice-card {
+    min-height: 48px;
+  }
+  .control-pill-btn {
+    min-height: 36px;
+    min-width: 36px;
+  }
+  button {
+    min-height: 44px;
+  }
+}
+
+/* Landscape phone — keep horizontal but compress */
+@media (max-height: 500px) and (orientation: landscape) {
+  .wizard-left {
+    display: none !important;
+  }
+  .wizard-right {
+    padding: 16px 20px !important;
+  }
+}
+
+/* Safe area insets for notched phones */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .wizard-right {
+    padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+  }
+  .review-actions {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
