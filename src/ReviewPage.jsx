@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Mail, MessageSquare, ChevronLeft, RotateCcw, Database } from 'lucide-react';
+import { Send, ChevronLeft, RotateCcw } from 'lucide-react';
 import gsap from 'gsap';
 
 export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
@@ -19,24 +19,20 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
     return () => ctx.revert();
   }, []);
 
-  const handleWhatsApp = () => {
-    const txt = generateSummary();
-    window.open(`https://wa.me/237696814391?text=${encodeURIComponent(txt)}`, '_blank');
-  };
-
-  const handleEmail = () => {
+  const buildEmailBody = () => {
     const txt = generateSummary();
     const sub = `[XyberClan] ${selectedFlow === 'enterprise'
       ? (lang === 'fr' ? 'Enquête Opérationnelle' : 'Enterprise Survey')
       : (lang === 'fr' ? 'Proposition de Partenariat' : 'Partnership Proposal')}`;
-    window.location.href = `mailto:xyberclandev@gmail.com?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(txt)}`;
+    return { subject: sub, body: txt };
   };
 
-  const handleSubmit = async () => {
+  const handleSendAll = async () => {
     setIsSubmitting(true);
+    const txt = generateSummary();
+
+    // 1) Google Sheets
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxO-XT0bSZPbszsvb9SP5cHUewC7nRUrta2HT2aI4Uh37EtPQfZ69Tzc4_VibQlHNv4Q/exec';
-    
-    // Map our state answers to what the Google Apps Script expects
     const payload = {
       companyName: answers.companyName || "",
       industry: answers.industry || "",
@@ -68,22 +64,25 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
       flowType: selectedFlow
     };
 
-    try {
-      await fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-      setIsSuccess(true);
-    } catch (e) {
-      console.error(e);
-      alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    const sheetsPromise = fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(e => console.error('Sheets error:', e));
+
+    // 2) WhatsApp — open in new tab
+    const waUrl = `https://wa.me/237696814391?text=${encodeURIComponent(txt)}`;
+    window.open(waUrl, '_blank');
+
+    // 3) Email — open mailto
+    const { subject, body } = buildEmailBody();
+    window.location.href = `mailto:xyberclandev@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    // Wait for sheets to finish, then show success
+    await sheetsPromise;
+    setIsSubmitting(false);
+    setIsSuccess(true);
   };
 
   if (isSuccess) {
@@ -177,10 +176,10 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
             color: 'var(--text-muted)' }}>{t.repCredentials}</span>
           <div className="review-contact-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             {[
-              [t.companyLabel, answers.company],
-              [t.leadNameLabel, answers.name],
-              [t.emailLabel, answers.email],
-              [t.phoneLabel, answers.phone],
+              [t.companyLabel, answers.companyName],
+              [t.leadNameLabel, answers.contactName || answers.name],
+              [t.emailLabel, answers.contactEmail],
+              [t.phoneLabel, answers.contactPhone],
             ].map(([label, val]) => (
               <div key={label}>
                 <span style={{ fontSize: '0.62rem', color: 'var(--text-secondary)', display: 'block' }}>{label}</span>
@@ -193,32 +192,27 @@ export function ReviewPage({ steps, answers, selectedFlow, t, onBack, onRestart,
         </div>
       </div>
 
-      {/* Action buttons */}
-      <div className="rv-item review-actions" style={{ maxWidth: 680, width: '100%', margin: '0 auto',
-        display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
-        
-        <button onClick={handleSubmit} disabled={isSubmitting} className="glow-btn"
-          style={{ background: 'var(--bg-input)', border: '1px solid var(--border-color)', borderRadius: 8, padding: '15px 18px',
-            color: 'var(--text-primary)', fontSize: '0.88rem', fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            fontFamily: 'var(--font-sans)', opacity: isSubmitting ? 0.7 : 1 }}>
-          <Database size={17}/> {isSubmitting ? (lang === 'fr' ? 'Envoi...' : 'Sending...') : t.submitBtn}
+      {/* Single unified Send button */}
+      <div className="rv-item review-actions" style={{ maxWidth: 680, width: '100%', margin: '0 auto' }}>
+        <button onClick={handleSendAll} disabled={isSubmitting}
+          className="glow-btn"
+          style={{ width: '100%', background: isSubmitting ? 'rgba(255,255,255,0.04)' : accentColor,
+            border: 'none', borderRadius: 10, padding: '16px 24px',
+            color: '#fff', fontSize: '0.95rem', fontWeight: 700,
+            cursor: isSubmitting ? 'not-allowed' : 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+            fontFamily: 'var(--font-sans)', opacity: isSubmitting ? 0.7 : 1,
+            transition: 'all 0.25s ease' }}>
+          <Send size={18}/> {isSubmitting
+            ? (lang === 'fr' ? 'Envoi en cours...' : 'Sending...')
+            : (lang === 'fr' ? 'Envoyer' : 'Send')}
         </button>
-
-        <button onClick={handleWhatsApp} className="glow-btn"
-          style={{ background: '#128C7E', border: 'none', borderRadius: 8, padding: '15px 18px',
-            color: '#fff', fontSize: '0.88rem', fontWeight: 700, cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            fontFamily: 'var(--font-sans)' }}>
-          <MessageSquare size={17}/> {t.transmitWhatsApp}
-        </button>
-        <button onClick={handleEmail} className="glow-btn"
-          style={{ background: accentColor, border: 'none', borderRadius: 8, padding: '15px 18px',
-            color: '#fff', fontSize: '0.88rem', fontWeight: 700, cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            fontFamily: 'var(--font-sans)' }}>
-          <Mail size={17}/> {t.transmitEmail}
-        </button>
+        <span className="rv-item" style={{ display: 'block', textAlign: 'center', marginTop: 10,
+          fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+          {lang === 'fr'
+            ? 'Envoie automatique vers Google Sheets, WhatsApp et E-mail'
+            : 'Auto-sends to Google Sheets, WhatsApp and Email'}
+        </span>
       </div>
 
       {/* Secondary actions */}

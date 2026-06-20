@@ -42,7 +42,11 @@ export const uiTranslations = {
     placeholderTextarea: "Write your ideas, guidelines, or sponsorship tier expectations here...",
     textareaHint: "Press Next Step or Ctrl+Enter to advance.",
     inputValidationAlert: "Please fill out all fields correctly to proceed.",
-    notAvailable: "N/A"
+    notAvailable: "N/A",
+    submitBtn: "Send",
+    succTitle: "Survey Sent Successfully!",
+    succDesc: "Your data has been submitted to Google Sheets, sent via WhatsApp, and emailed to our team. We will get back to you within 24 hours.",
+    succBtn: "Start New Survey"
   },
   fr: {
     brand: "XYBERCLAN",
@@ -85,7 +89,11 @@ export const uiTranslations = {
     placeholderTextarea: "Rédigez vos idées, directives ou attentes de niveau de partenariat ici...",
     textareaHint: "Appuyez sur Étape Suivante ou Ctrl+Entrée pour continuer.",
     inputValidationAlert: "Veuillez remplir tous les champs correctement pour continuer.",
-    notAvailable: "Non renseigné"
+    notAvailable: "Non renseigné",
+    submitBtn: "Envoyer",
+    succTitle: "Enquête envoyée avec succès !",
+    succDesc: "Vos données ont été soumises à Google Sheets, envoyées par WhatsApp et e-maillées à notre équipe. Nous vous répondrons dans les 24 heures.",
+    succBtn: "Commencer une nouvelle enquête"
   }
 };
 
